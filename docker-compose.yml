@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  imcargo:
+    restart: unless-stopped
+    build: ./
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./imcargo:/go/src/static/avatar
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100MB"
+        max-file: "3"
+    networks:
+      - sunset
+
+networks:
+  sunset:
+    driver: bridge

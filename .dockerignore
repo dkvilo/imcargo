@@ -1,0 +1,6 @@
+Dockerfile
+readme.md
+.git
+.gitignore
+.DS_Store
+/imcargo

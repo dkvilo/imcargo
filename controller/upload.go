@@ -1,13 +1,14 @@
 package controller
 
 import (
-	"encoding/json"
+	"fmt"
 	"image"
 	"io"
 	"net/http"
 	"strconv"
 	"strings"
 
+	"github.com/dkvilo/imcargo/core"
 	"github.com/dkvilo/imcargo/functions"
 	"github.com/dkvilo/imcargo/model"
 	"github.com/julienschmidt/httprouter"
@@ -15,7 +16,8 @@ import (
 
 // Upload controller
 func (ctrl *Controller) Upload(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-
+	
+	w.Header().Set("Content-Type", "text/json")
 	queryValuse := r.URL.Query()
 
 	var _type string = "default"
@@ -42,7 +44,15 @@ func (ctrl *Controller) Upload(w http.ResponseWriter, r *http.Request, _ httprou
 
 	mf, _, err := r.FormFile("image")
 	if err != nil {
-		http.Error(w, "Unable to read file from form", http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
+		io.WriteString(w, string(
+			core.Response(
+				model.ImageObject{
+					Success: false,
+					Message: fmt.Sprintf("Unable to read Image from form: %s", err.Error()),
+				},
+			),
+		))
 		return
 	}
 	defer mf.Close()
@@ -61,38 +71,64 @@ func (ctrl *Controller) Upload(w http.ResponseWriter, r *http.Request, _ httprou
 	}
 
 	if err != nil {
-		http.Error(w, "Unable to resize image", http.StatusBadRequest)
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, string(
+			core.Response(
+				model.ImageObject{
+					Success: false,
+					Message: fmt.Sprintf("Unable to resize the image: %s", err.Error()),
+				},
+			),
+		))
 		return
 	}
 
 	if blur > 0.0 {
 		avatar, err = functions.BlurImage(avatar, blur)
 		if err != nil {
-			http.Error(w, "Unable to resize image", http.StatusBadRequest)
+			w.WriteHeader(http.StatusInternalServerError)
+			io.WriteString(w, string(
+				core.Response(
+					model.ImageObject{
+						Success: false,
+						Message: fmt.Sprintf("Unable to blur the image: %s", err.Error()),
+					},
+				),
+			))
 			return
 		}
 	}
 
 	avatarPath, err := functions.SaveImage("static/avatar/", avatar);
 	if err != nil {
-		http.Error(w, "Unable to save image", http.StatusBadRequest)
+		w.WriteHeader(http.StatusInternalServerError)
+		io.WriteString(w, string(
+			core.Response(
+				model.ImageObject{
+					Success: false,
+					Message: fmt.Sprintf("Unable to save the image: %s", err.Error()),
+				},
+			),
+		))
 		return
 	}
 
-	w.Header().Set("Content-Type", "text/json")
-	w.WriteHeader(200)
-
-	data, _ := json.Marshal(model.ImageObject{
-		Success: true,
-		Message: "Avatar was uploaded successfully",
-		Data: model.Data {
-			Path: avatarPath,
-			Size: model.Size {
-				Width: avatar.Bounds().Size().X,
-				Height: avatar.Bounds().Size().Y,
+	w.WriteHeader(http.StatusOK)
+	io.WriteString(w, string(
+		core.Response(
+			model.ImageObject{
+				Success: true,
+				Message: "Avatar was uploaded successfully",
+				Data: model.Data {
+					Path: avatarPath,
+					Size: model.Size {
+						Width: avatar.Bounds().Size().X,
+						Height: avatar.Bounds().Size().Y,
+					},
+				},
 			},
-		},
-	})
-
-	io.WriteString(w, string(data))
+		),
+	))
+	
+	return
 }

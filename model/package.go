@@ -2,20 +2,20 @@ package model
 
 // Size type
 type Size struct {
-	Width int `json:"width"`
-	Height int `json:"height"`
+	Width int `json:"width,omitempty"`
+	Height int `json:"height,omitempty"`
 }
 
 // Data type
 type Data struct {
-	Size Size `json:"size"`
-	Path string `json:"path"`
+	Size Size `json:"size,omitempty"`
+	Path string `json:"path,omitempty"`
 }
 
 // ImageObject Structure
 type ImageObject struct {
 	Success bool `json:"success"`
 	Message string `json:"message"`
-	Data Data `json:"data"`
+	Data Data `json:"data,omitempty"`
 }
 

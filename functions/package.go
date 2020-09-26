@@ -7,8 +7,8 @@ import (
 	"encoding/hex"
 	"image"
 	"image/jpeg"
+	"io/ioutil"
 	"mime/multipart"
-	"os"
 
 	"github.com/disintegration/imaging"
 	uuid "github.com/satori/go.uuid"
@@ -48,23 +48,28 @@ func BlurImage(src image.Image, opacity float64) (image.Image, error) {
 // SaveImage - Save new image locally
 func SaveImage(dir string, image image.Image) (string, error) {
 	
-	u1 := uuid.NewV4()
-	fName := dir + u1.String() + ".webp"
-	wf, err := os.Create(fName)
+	fileName := (dir + uuid.NewV4().String() + ".jpg")
 
-	buf := new(bytes.Buffer)
-	if err := jpeg.Encode(buf, image, nil); err != nil {
+	// wf, err := os.Create(fileName)
+	// if err != nil {
+	// 	return "", err
+	// }
+
+
+	imageBuffer := new(bytes.Buffer)
+	if err := jpeg.Encode(imageBuffer, image, nil); err != nil {
 		return "", err
 	}
 	
-	wf.Write(buf.Bytes())
-	defer wf.Close()
+	// wf.Write(imageBuffer.Bytes())
+	// defer wf.Close()
 
+	err := ioutil.WriteFile(fileName, imageBuffer.Bytes(), 0666)
 	if err != nil {
 		return "", err
 	}
-
-	return fName, nil
+	
+	return fileName, nil
 }
 
 // ValidMAC reports whether messageMAC is a valid HMAC tag for message.
