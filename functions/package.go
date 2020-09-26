@@ -47,22 +47,13 @@ func BlurImage(src image.Image, opacity float64) (image.Image, error) {
 
 // SaveImage - Save new image locally
 func SaveImage(dir string, image image.Image) (string, error) {
-	
+
 	fileName := (dir + uuid.NewV4().String() + ".jpg")
-
-	// wf, err := os.Create(fileName)
-	// if err != nil {
-	// 	return "", err
-	// }
-
-
+	
 	imageBuffer := new(bytes.Buffer)
 	if err := jpeg.Encode(imageBuffer, image, nil); err != nil {
 		return "", err
 	}
-	
-	// wf.Write(imageBuffer.Bytes())
-	// defer wf.Close()
 
 	err := ioutil.WriteFile(fileName, imageBuffer.Bytes(), 0666)
 	if err != nil {
