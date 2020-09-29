@@ -10,7 +10,7 @@ Simple Image processing/storing service
 ### API Documentation
 ### [POST] /upload
 | Param   |      Description      |  Required  | Default Value | Type |
-|----------|:-------------:|------:|------:|------:| 
+|----------|:-------------:|------:|------:|------:|
 | accessToken | Token to authorize | Yes | Available in Terminal | URL Param |
 | size | Croped Image size  |  No  | 128x128 | URL Param |
 | type | Crop Origin Point | No | default (centered) | URL Param |
@@ -42,14 +42,14 @@ http://localhost:8080/upload?size=800x800&type=centered&blur=0&accessToken=38fc3
 ```
 
 ### Todo:
-  - [] Clean up the codebase
-  - [] Make hmac auth stabile
-  - [] Use .env file for the secrets
-  - [] Multiple bucket support
-  - [] Delete Support
-  - [] RT Image manipulation EP
-  - [] Store Entity in database (SQLte maybe)
-  - [] Write tests
+  - [x] Clean up the codebase
+  - [x] Make hmac auth stabile
+  - [x] Use .env file for the secrets
+  - [ ] Multiple bucket support
+  - [ ] Delete Support
+  - [ ] RT Image manipulation EP
+  - [ ] Store Entity in database (SQLte maybe)
+  - [ ] Write tests
   - [X] Write THE DOCS!
   - [x] Docker support please
 

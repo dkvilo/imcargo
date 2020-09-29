@@ -20,9 +20,7 @@ func ResizeImage(src multipart.File, size image.Point) (image.Image, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	defer src.Close()
-
 	dstImage := imaging.Resize(img, size.X, size.Y, imaging.Box)
 	return dstImage, nil
 }
@@ -34,7 +32,6 @@ func CropCenterAnchor(src multipart.File, size image.Point) (image.Image, error)
 		return nil, err
 	}
 	defer src.Close()
-
 	dstImage := imaging.CropAnchor(img, size.X, size.Y, imaging.Center)
 	return dstImage, nil
 }
@@ -47,19 +44,15 @@ func BlurImage(src image.Image, opacity float64) (image.Image, error) {
 
 // SaveImage - Save new image locally
 func SaveImage(dir string, image image.Image) (string, error) {
-
 	fileName := (dir + uuid.NewV4().String() + ".jpg")
-	
 	imageBuffer := new(bytes.Buffer)
 	if err := jpeg.Encode(imageBuffer, image, nil); err != nil {
 		return "", err
 	}
-
 	err := ioutil.WriteFile(fileName, imageBuffer.Bytes(), 0666)
 	if err != nil {
 		return "", err
 	}
-	
 	return fileName, nil
 }
 
