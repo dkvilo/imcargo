@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
 	"log"
 	"net/http"
 	"os"
@@ -19,13 +18,6 @@ import (
 	"github.com/dkvilo/imcargo/middleware"
 	"github.com/julienschmidt/httprouter"
 )
-
-func init() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-}
 
 
 func main() {
